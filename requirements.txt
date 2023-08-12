@@ -1,6 +1,10 @@
+tensorflow==2.5.0
 fastapi
 uvicorn
-tensorflow
+python-multipart
+pillow
+tensorflow-serving-api==2.5.0
+matplotlib
+numpy
 requests
-Pillow
 langchain
