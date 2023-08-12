@@ -1,10 +1,7 @@
 fastapi
 uvicorn
-io
-PIL
 tensorflow
 requests
 json
-os
 langchain
 dotenv
