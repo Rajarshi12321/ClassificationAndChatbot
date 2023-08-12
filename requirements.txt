@@ -3,4 +3,3 @@ uvicorn
 tensorflow
 requests
 langchain
-dotenv
