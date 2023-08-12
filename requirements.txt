@@ -1,6 +1,5 @@
 fastapi
-uvicorn
-io
+uvicorn==0.23.2
 PIL
 tensorflow
 requests
