@@ -7,7 +7,11 @@ from PIL import Image
 import tensorflow as tf
 import requests
 import json
+import os
+from langchain import PromptTemplate, HuggingFaceHub, LLMChain
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = FastAPI()
 
@@ -22,6 +26,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+HUGGINGFACEHUB_APT_TOKEN = os.getenv("HUGGINGFACEHUB_APT_TOKEN")
+
+ANIMAL_API_TOKEN = os.getenv("ANIMAL_API_TOKEN")
+
 
 # endpoint = "http://localhost:8501/v1/models/potatoes_model:predict"
 
@@ -228,7 +237,7 @@ def animal_data(predicted_class):
     api_url = 'https://api.api-ninjas.com/v1/animals?name={}'.format(
         predicted_class)
     response = requests.get(
-        api_url, headers={'X-Api-Key': 'iPV7D/RpZsc+Pipw0JOZDg==mQb2ZbFed7zCzaXq'})
+        api_url, headers={'X-Api-Key': ANIMAL_API_TOKEN})
     if response.status_code == requests.codes.ok:
         # print(response.text)
         pass
@@ -285,9 +294,53 @@ async def predict(
     }
 
 
-@app.get("/chatbot")
-async def ping():
-    return "Hello, I am alive"
+@app.post("/chatbot")
+async def chat(data: dict):
+    # Generate empty lists for generated and user.
+    # Assistant Response
+    print(data['text'])
+
+    # get user input
+
+    def get_text(data):
+
+        return data['text']
+
+    # Applying the user input box
+
+    def chain_setup():
+
+        template = """<|prompter|>{question}<|endoftext|>
+        <|assistant|>"""
+
+        prompt = PromptTemplate(
+            template=template, input_variables=["question"])
+
+        llm = HuggingFaceHub(
+            repo_id="OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5", model_kwargs={"max_new_tokens": 1200}, huggingfacehub_api_token=HUGGINGFACEHUB_APT_TOKEN)
+
+        llm_chain = LLMChain(
+            llm=llm,
+            prompt=prompt
+        )
+        return llm_chain
+
+    # generate response
+
+    def generate_response(question, llm_chain):
+        response = llm_chain.run(question)
+        return response
+
+    # load LLM
+    llm_chain = chain_setup()
+
+    # main loop
+    input_text = get_text(
+        data) + 'tell me a first aid and provide me best possible solution in 10 points for this situation'
+    response = generate_response(input_text, llm_chain)
+    print(response)
+
+    return response
 
 
 # if __name__ == "__main__":
