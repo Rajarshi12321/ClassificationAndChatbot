@@ -15,17 +15,18 @@ load_dotenv()
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+# origins = [
+#     "http://localhost",
+#     "http://localhost:3000",
+# ]
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 HUGGINGFACEHUB_APT_TOKEN = os.getenv("HUGGINGFACEHUB_APT_TOKEN")
 
@@ -343,8 +344,8 @@ async def chat(data: dict):
     return response
 
 
-# if __name__ == "__main__":
-#     uvicorn.run(app, host='localhost', port=8000)
+if __name__ == "__main__":
+    uvicorn.run(app, host='localhost', port=8000)
 
 '''
 These are some of the animals whose exact data is not available in the api
