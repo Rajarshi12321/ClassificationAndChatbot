@@ -2,6 +2,5 @@ fastapi
 uvicorn
 tensorflow
 requests
-json
 langchain
 dotenv
